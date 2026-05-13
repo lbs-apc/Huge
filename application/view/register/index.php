@@ -4,7 +4,7 @@
     <?php $this->renderFeedbackMessages(); ?>
 
     <!-- login box on left side -->
-    <div class="register-box-new" style="width: 50%; display: block;">
+    <div class="login-box" style="width: 100%; display: block;">
         <h2>Register a new account</h2>
 
         <!-- register form -->
