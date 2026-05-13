@@ -18,7 +18,7 @@
 		    Please note: This whole process has been renamed from AccountType (v3.0) to UserRole (v3.1).
 	    </p>
 
-        <h2>Currently your account type is: <?php echo Session::get('user_account_type'); ?></h2>
+        <h2>Currently your account type is: <?php echo UserRoleModel::getRoleName((int) Session::get('user_account_type')); ?></h2>
         <!-- basic implementation for two account types: type 1 and type 2 -->
 	    <form action="<?php echo Config::get('URL'); ?>user/changeUserRole_action" method="post">
             <?php if (Session::get('user_account_type') == 1) { ?>

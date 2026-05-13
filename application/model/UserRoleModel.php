@@ -8,6 +8,37 @@
 class UserRoleModel
 {
     /**
+     * Returns name of roles in admin view
+     * @return array
+     */
+    public static function getRoleNames()
+    {
+        return array(
+        // 3456 stay empty for now for futre roles
+            1 => 'Guest',
+            2 => 'User',
+            7 => 'Admin'
+        );
+    }
+
+    /**
+     * @param int $type
+     * @return string
+     */
+    public static function getRoleName($type)
+    {
+        // look for given id in array to return label
+        $roles = self::getRoleNames();
+
+        if (isset($roles[$type])) {
+            return $roles[$type];
+        } else {
+            return 'Role ' . $type;
+        }
+
+    }
+
+    /**
      * Upgrades / downgrades the user's account. Currently it's just the field user_account_type in the database that
      * can be 1 or 2 (maybe "basic" or "premium"). Put some more complex stuff in here, maybe a pay-process or whatever
      * you like.
@@ -42,7 +73,7 @@ class UserRoleModel
     public static function saveRoleToDatabase($type)
     {
         // if $type is not 1 or 2
-        if (!in_array($type, [1, 2])) {
+        if (!in_array($type, array(1, 2))) {
             return false;
         }
 
