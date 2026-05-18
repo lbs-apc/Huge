@@ -39,7 +39,15 @@
                         <td><?= $user->user_name; ?></td>
                         <td><?= $user->user_email; ?></td>
                         <td><?= ($user->user_active == 0 ? 'No' : 'Yes'); ?></td>
-                        <td><?= $user->user_account_type; ?></td>
+                        <td>
+                        <form>
+                            <select class="form-control" name="userRolesBox">
+                                <?php foreach ($this->roles as $roles) { ?>
+                                    <option><?= $roles->user_account_type; ?></option>
+                                <?php } ?>
+                            </select>
+                        </form>
+                        </td>
                         <td>
                             <a href="<?= Config::get('URL') . 'profile/showProfile/' . $user->user_id; ?>">Profile</a>
                         </td>

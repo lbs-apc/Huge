@@ -45,6 +45,26 @@ class UserModel
         return $all_users_profiles;
     }
 
+    public static function getAllUserRoles()
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $sql = "SELECT role_id, user_account_type, role_name FROM roles";
+        $query = $database->prepare($sql);
+        $query->execute();
+
+        $all_users_roles = array();
+
+        foreach ($query->fetchAll() as $role) {
+            $all_users_roles[$role->user_account_type] = new stdClass();
+            $all_users_roles[$role->user_account_type]->role_id = $role->role_id;
+            $all_users_roles[$role->user_account_type]->user_account_type = $role->user_account_type;
+            $all_users_roles[$role->user_account_type]->role_name = $role->role_name;
+           }
+
+        return $all_users_roles;
+    }
+
     /**
      * Gets a user's profile data, according to the given $user_id
      * @param int $user_id The user's id
