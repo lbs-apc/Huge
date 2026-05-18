@@ -38,7 +38,7 @@ class UserModel
             $all_users_profiles[$user->user_id]->user_email = $user->user_email;
             $all_users_profiles[$user->user_id]->user_active = $user->user_active;
             $all_users_profiles[$user->user_id]->user_deleted = $user->user_deleted;
-            $all_users_profiles[$user->user_id]->user_account_type = (UserRoleModel::getRoleName($user->user_account_type));
+            $all_users_profiles[$user->user_id]->user_account_type = $user->user_account_type;
             $all_users_profiles[$user->user_id]->user_avatar_link = (Config::get('USE_GRAVATAR') ? AvatarModel::getGravatarLinkByEmail($user->user_email) : AvatarModel::getPublicAvatarFilePathOfUser($user->user_has_avatar, $user->user_id));
         }
 
@@ -49,7 +49,7 @@ class UserModel
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT role_id, user_account_type, role_name FROM roles";
+        $sql = "SELECT role_id, user_account_type FROM roles";
         $query = $database->prepare($sql);
         $query->execute();
 
@@ -59,7 +59,6 @@ class UserModel
             $all_users_roles[$role->user_account_type] = new stdClass();
             $all_users_roles[$role->user_account_type]->role_id = $role->role_id;
             $all_users_roles[$role->user_account_type]->user_account_type = $role->user_account_type;
-            $all_users_roles[$role->user_account_type]->role_name = $role->role_name;
            }
 
         return $all_users_roles;

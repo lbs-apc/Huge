@@ -43,7 +43,10 @@
                         <form>
                             <select class="form-control" name="userRolesBox">
                                 <?php foreach ($this->roles as $roles) { ?>
-                                    <option><?= UserRoleModel::getRoleName($roles->user_account_type); ?></option>
+                                    <option value="<?= ($roles->user_account_type); ?>"
+                                        <?php if ($roles->user_account_type == $user->user_account_type) { ?> selected <?php } ?>>
+                                        <?= UserRoleModel::getRoleName($roles->user_account_type); ?>
+                                    </option>
                                 <?php } ?>
                             </select>
                         </form>
