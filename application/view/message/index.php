@@ -45,7 +45,7 @@
                         <td><?= ($user->user_active == 0 ? 'No' : 'Yes'); ?></td>
                         <td><?= $user->user_account_type_name; ?></td>
                         <td>
-                            <a href="<?= Config::get('URL') . 'profile/showProfile/' . $user->user_id; ?>">Profile</a>
+                            <a href="<?= Config::get('URL') . 'message/showChat/' . $user->user_id; ?>">Profile</a>
                         </td>
                     </tr>
                 <?php } ?>

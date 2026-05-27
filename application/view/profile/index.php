@@ -30,7 +30,8 @@
                     <td>User's email</td>
                     <td>Activated ?</td>
                     <td>Group</td>
-                    <td>Link to user's profile</td>
+                    <td>See Profile</td>
+                    <td>Chat</td>
                 </tr>
                 </thead>
                 <?php foreach ($this->users as $user) { ?>
@@ -47,6 +48,9 @@
                         <td><?= $user->user_account_type_name; ?></td>
                         <td>
                             <a href="<?= Config::get('URL') . 'profile/showProfile/' . $user->user_id; ?>">Profile</a>
+                        </td>
+                        <td>
+                            <a href="<?= Config::get('URL') . 'message/showChat/' . $user->user_id; ?>">Chat</a>
                         </td>
                     </tr>
                 <?php } ?>

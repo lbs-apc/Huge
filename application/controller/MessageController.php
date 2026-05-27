@@ -29,6 +29,17 @@ class MessageController extends Controller
         ));
     }
 
+    public function showChat($user_id)
+    {
+        if (isset($user_id)) {
+            $this->View->render('message/showChat', array(
+                'user' => UserModel::getPublicProfileOfUser($user_id))
+            );
+        } else {
+            Redirect::home();
+        }
+    }
+
 
     public function create()
     {
