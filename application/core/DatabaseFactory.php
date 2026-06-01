@@ -24,6 +24,8 @@ class DatabaseFactory
     private static $factory;
     private $database;
 
+    private $mysqli;
+
     public static function getFactory()
     {
         if (!self::$factory) {
@@ -61,4 +63,23 @@ class DatabaseFactory
         }
         return $this->database;
     }
+
+
+    public function getMySqliConnection()
+    {
+        if (!$this->mysqli) {
+            $this->mysqli = new mysqli(
+                Config::get('DB_HOST'),
+                Config::get('DB_USER'),
+                Config::get('DB_PASS'),
+                Config::get('DB_NAME'),
+                Config::get('DB_PORT')
+            );
+            if ($this->mysqli->connect_error) {
+                return null;
+            }
+        }
+        return $this->mysqli;
+    }
+
 }

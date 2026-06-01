@@ -7,6 +7,23 @@
  */
 class UserRoleModel
 {
+    public static function getAllRoles() {
+            $database = DatabaseFactory::getFactory()->getMySqliConnection();
+
+            $query = "SELECT role_id, role_name FROM roles";
+            $result = $database->query($query);
+
+            if ($result) {
+                $roles = array();
+                while ($row = $result->fetch_object()) {
+                    $roles[] = $row;
+                }
+                return $roles;
+            }
+            else {
+                return null;
+            }
+        }
     /**
      * Returns name of roles in admin view
      * @return array
