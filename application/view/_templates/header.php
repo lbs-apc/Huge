@@ -31,8 +31,9 @@
                 <li <?php if (View::checkForActiveController($filename, "note")) { echo ' class="active" '; } ?> >
                     <a href="<?php echo Config::get('URL'); ?>note/index">My Notes</a>
                 </li>
-                <li <?php if (View::checkForActiveController($filename, "messages")) { echo ' class="active" '; } ?> >
-                    <a href="<?php echo Config::get('URL'); ?>message/index">My Messages</a>
+                <?php $unread = 0; if (Session::userIsLoggedIn()) { $unread = MessageModel::getUnreadCount(Session::get('user_id')); } ?>
+                <li <?php if (View::checkForActiveController($filename, "message")) { echo ' class="active" '; } ?> >
+                    <a href="<?php echo Config::get('URL'); ?>message/index">My Messages <?php if ($unread > 0) { echo '<span class="badge" style="background:red;color:white;padding:2px 6px;border-radius:50%;margin-left:6px;">' . $unread . '</span>'; } ?></a>
                 </li>
             <?php } else { ?>
                 <!-- for not logged in users -->
