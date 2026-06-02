@@ -1,63 +1,58 @@
 <?php
-
-/**
- * The note controller: Just an example of simple create, read, update and delete (CRUD) actions.
- */
 class MessageController extends Controller
 {
-    /**
-     * Construct this object by extending the basic Controller class
-     */
     public function __construct()
     {
         parent::__construct();
-
-        // VERY IMPORTANT: All controllers/areas that should only be usable by logged-in users
-        // need this line! Otherwise not-logged in users could do actions. If all of your pages should only
-        // be usable by logged-in users: Put this line into libs/Controller->__construct
         Auth::checkAuthentication();
     }
 
-    /**
-     * This method controls what happens when you move to /note/index in your app.
-     * Gets all notes (of the user).
-     */
     public function index()
     {
+        $all_users = UserModel::getPublicProfilesOfAllUsers();
+        $filtered_users = array();
+
+        foreach ($all_users as $user) {
+            if ($user->user_id != Session::get('user_id')) {
+                $filtered_users[] = $user;
+            }
+        }
+
         $this->View->render('message/index', array(
-            'messages' => MessageModel::getAllMessages()
+            'users' => $filtered_users
         ));
     }
 
     public function showChat($user_id)
     {
         if (isset($user_id)) {
+            MessageModel::markMessagesAsReadFrom($user_id, Session::get('user_id'));
+
+            $user_data = UserModel::getPublicProfileOfUser($user_id);
+            $chat_data = MessageModel::getConversationWith($user_id);
+
             $this->View->render('message/showChat', array(
-                'user' => UserModel::getPublicProfileOfUser($user_id))
-            );
+                'user' => $user_data,
+                'conversation' => $chat_data
+            ));
         } else {
             Redirect::home();
         }
     }
 
-
-    public function create()
+    public function send($receiver_id)
     {
+        $message_text = Request::post('text');
 
-    }
+        if (!$message_text) {
+            $message_text = Request::get('text');
+        }
 
-    public function edit()
-    {
+        if ($receiver_id && $message_text) {
+            MessageModel::sendMessage($receiver_id, $message_text);
+            Session::add('feedback_positive', "Sent!");
+        }
 
-    }
-
-    public function editSave()
-    {
-
-    }
-
-    public function delete()
-    {
-
+        Redirect::to('message/showChat/' . $receiver_id);
     }
 }
