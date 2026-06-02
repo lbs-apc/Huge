@@ -31,6 +31,9 @@
                             <td><?= $this->user->user_name; ?></td>
                             <td><?= $this->user->user_email; ?></td>
                             <td><?= ($this->user->user_active == 0 ? 'No' : 'Yes'); ?></td>
+                            <td>
+                                <a href="<?= Config::get('URL') . 'message/showChat/' . $this->user->user_id; ?>">Message this user</a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

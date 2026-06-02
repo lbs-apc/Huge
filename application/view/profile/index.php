@@ -50,7 +50,9 @@
                             <a href="<?= Config::get('URL') . 'profile/showProfile/' . $user->user_id; ?>">Profile</a>
                         </td>
                         <td>
-                            <a href="<?= Config::get('URL') . 'message/showChat/' . $user->user_id; ?>">Chat</a>
+                            <form action="<?= Config::get('URL') . 'message/showChat/' . $user->user_id; ?>">
+                                <input type="submit" value="Send Chat" />
+                            </form>
                         </td>
                     </tr>
                 <?php } ?>
