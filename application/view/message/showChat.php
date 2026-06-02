@@ -1,30 +1,48 @@
 <div class="container">
     <h1>Chat with <?= $this->user->user_name; ?></h1>
-    
+
     <div class="box">
         <?php $this->renderFeedbackMessages(); ?>
 
         <a href="<?php echo Config::get('URL'); ?>message/index">Back</a>
-        <br><br>
 
-        <div id="chat-window" style="height:300px; border:1px solid black; overflow:scroll;">
+        <section class="discussion">
         <?php if (!empty($this->conversation)) { ?>
-            <?php foreach ($this->conversation as $m) { ?>
-                <div>
-                    <b><?= ($m->sender_id == Session::get('user_id') ? 'You' : $this->user->user_name); ?>:</b>
-                    <?= htmlspecialchars($m->content); ?>
-                    <br>
-                    <small><?= $m->created_at; ?></small>
+            <?php
+            $msg_count = count($this->conversation);
+            for ($i = 0; $i < $msg_count; $i++) {
+
+                $current = $this->conversation[$i];
+
+                $prev = ($i > 0) ? $this->conversation[$i-1] : null;
+                $next = ($i < $msg_count - 1) ? $this->conversation[$i+1] : null;
+
+                $is_me = ($current->sender_id == Session::get('user_id'));
+                $type = $is_me ? 'recipient' : 'sender';
+
+                $is_same_as_prev = ($prev && $prev->sender_id == $current->sender_id);
+                $is_same_as_next = ($next && $next->sender_id == $current->sender_id);
+
+                $extra_class = "";
+                if (!$is_same_as_prev && $is_same_as_next) {
+                    $extra_class = "first";
+                } else if ($is_same_as_prev && $is_same_as_next) {
+                    $extra_class = "middle";
+                } else if ($is_same_as_prev && !$is_same_as_next) {
+                    $extra_class = "last";
+                }
+            ?>
+                <div class="bubble <?= $type; ?> <?= $extra_class; ?>">
+                    <?= htmlspecialchars($current->content); ?>
                 </div>
-                <hr>
             <?php } ?>
         <?php } else { ?>
             <p>No messages yet.</p>
         <?php } ?>
-        </div>
+        </section>
 
         <form method="post" action="<?php echo Config::get('URL'); ?>message/send/<?php echo $this->user->user_id; ?>">
-            <input type="text" name="text" />
+            <input type="text" name="text" placeholder="Type a message..." />
             <input type="submit" value="Send" />
         </form>
 
