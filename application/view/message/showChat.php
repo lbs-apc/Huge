@@ -4,7 +4,7 @@
     <?php } else { ?>
         <h1>Chat with <?= $this->user->user_name; ?></h1>
     <?php } ?>
-    
+
     <div class="box">
         <?php $this->renderFeedbackMessages(); ?>
 
@@ -12,21 +12,21 @@
 
         <section class="discussion">
         <?php if (!empty($this->conversation)) { ?>
-            <?php 
+            <?php
             $msg_count = count($this->conversation);
             for ($i = 0; $i < $msg_count; $i++) {
-                
+
                 $current = $this->conversation[$i];
-                
+
                 $prev = ($i > 0) ? $this->conversation[$i-1] : null;
                 $next = ($i < $msg_count - 1) ? $this->conversation[$i+1] : null;
 
                 $is_me = ($current->sender_id == Session::get('user_id'));
                 $type = $is_me ? 'recipient' : 'sender';
-                
+
                 $is_same_as_prev = ($prev && $prev->sender_id == $current->sender_id);
                 $is_same_as_next = ($next && $next->sender_id == $current->sender_id);
-                
+
                 $extra_class = "";
                 if (!$is_same_as_prev && $is_same_as_next) {
                     $extra_class = "first";
