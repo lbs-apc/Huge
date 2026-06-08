@@ -35,6 +35,9 @@
                 <li <?php if (View::checkForActiveController($filename, "message")) { echo ' class="active" '; } ?> >
                     <a href="<?php echo Config::get('URL'); ?>message/index">My Messages <?php if ($unread > 0) { echo '<span class="badge" style="background:red;color:white;padding:2px 6px;border-radius:50%;margin-left:6px;">' . $unread . '</span>'; } ?></a>
                 </li>
+                <li <?php if (View::checkForActiveController($filename, "gallery")) { echo ' class="active" '; } ?> >
+                    <a href="<?php echo Config::get('URL'); ?>gallery/index">Gallery</a>
+                </li>
             <?php } else { ?>
                 <!-- for not logged in users -->
                 <li <?php if (View::checkForActiveControllerAndAction($filename, "login/index")) { echo ' class="active" '; } ?> >
