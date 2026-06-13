@@ -11,7 +11,7 @@ class GalleryController extends Controller
     public function index()
     {
         $images = GalleryModel::getAllImages();
-        $this->View->render('gallery/showGallery', array(
+        $this->View->render('gallery/index.php', array(
             'images' => $images
         ));
     }
@@ -31,6 +31,12 @@ class GalleryController extends Controller
     public function toggle($id)
     {
         GalleryModel::toggleShared($id);
+        Redirect::to('gallery/index');
+    }
+
+    public function download()
+    {
+        GalleryModel::downloadImage();
         Redirect::to('gallery/index');
     }
 
