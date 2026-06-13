@@ -53,6 +53,11 @@ return [
         realpath(dirname(__FILE__) . "/../../") . "/public/avatars/",
     "PATH_AVATARS_PUBLIC" => "avatars/",
     /**
+     * gallery paths
+     */
+    "PATH_GALLERY" =>
+        realpath(dirname(__FILE__) . "/../../") . "/userpictures/",
+    /**
      * Configuration for: Default controller and action
      */
     "DEFAULT_CONTROLLER" => "index",
