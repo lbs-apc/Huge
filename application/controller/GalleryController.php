@@ -34,10 +34,9 @@ class GalleryController extends Controller
         Redirect::to('gallery/index');
     }
 
-    public function download()
+    public function download($id)
     {
-        GalleryModel::downloadImage();
-        Redirect::to('gallery/index');
+        GalleryModel::downloadImage($id);
     }
 
     public function show($id)
