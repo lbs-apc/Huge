@@ -18,14 +18,18 @@
                             <img src="<?php echo Config::get('URL'); ?>gallery/show/<?php echo $image->image_id; ?>" style="width:100%">
                         </div>
                         <figcaption>
-                            <?php if ($image->owner_id == Session::get('user_id')) { ?>
-                                <a href="<?php echo Config::get('URL'); ?>gallery/toggle/<?php echo $image->image_id; ?>">
-                                    <?php if ($image->is_shared == 1) { echo "Make Private"; } else { echo "Share"; } ?>
-                                </a> |
-                                <a href="<?php echo Config::get('URL'); ?>gallery/delete/<?php echo $image->image_id; ?>" onclick="return confirm('Are you sure?')">Delete</a>
-                            <?php } else { ?>
-                                <span>Public Image</span>
-                            <?php } ?>
+                            <div class="button-group">
+                                <a href="<?php echo Config::get('URL'); ?>gallery/download/<?php echo $image->image_id; ?>" class="btn">Download</a>
+
+                                <?php if ($image->owner_id == Session::get('user_id')) { ?>
+                                    <a href="<?php echo Config::get('URL'); ?>gallery/toggle/<?php echo $image->image_id; ?>" class="btn">
+                                        <?php if ($image->is_shared == 1) { echo "Make Private"; } else { echo "Share"; } ?>
+                                    </a>
+                                    <a href="<?php echo Config::get('URL'); ?>gallery/delete/<?php echo $image->image_id; ?>" class="btn btn-delete" onclick="return confirm('Are you sure?')">Delete</a>
+                                <?php } else { ?>
+                                    <span class="label">Public Image</span>
+                                <?php } ?>
+                            </div>
                         </figcaption>
                     </figure>
                 </li>

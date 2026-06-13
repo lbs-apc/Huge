@@ -27,7 +27,7 @@ class GalleryModel
 
         // Build path
         $folder = Config::get('PATH_GALLERY') . $user_id . "/";
-        
+
         if (!is_dir($folder)) {
             mkdir($folder, 0777, true);
         }
@@ -58,11 +58,40 @@ class GalleryModel
         }
 
         $path = Config::get('PATH_GALLERY') . $image->owner_id . "/" . $image->filename;
-        
+
         $finfo = new finfo(FILEINFO_MIME_TYPE);
         $mime = $finfo->file($path);
 
         header("Content-Type: " . $mime);
+        readfile($path);
+        exit;
+    }
+
+    public static function downloadImage($id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT * FROM gallery WHERE image_id = :id LIMIT 1";
+        $query = $db->prepare($sql);
+        $query->execute(array(':id' => $id));
+        $image = $query->fetch();
+
+        if (!$image) {
+            die("Image not found");
+        }
+
+        $path = Config::get('PATH_GALLERY') . $image->owner_id . "/" . $image->filename;
+
+        if (!file_exists($path)) {
+            die("File not found on server");
+        }
+
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->file($path);
+
+        header('Content-Type: ' . $mime);
+        header('Content-Disposition: attachment; filename="' . $image->filename . '"');
+        header('Content-Length: ' . filesize($path));
+
         readfile($path);
         exit;
     }
