@@ -11,7 +11,7 @@ class GalleryController extends Controller
     public function index()
     {
         $images = GalleryModel::getAllImages();
-        $this->View->render('gallery/index.php', array(
+        $this->View->render('gallery/index', array(
             'images' => $images
         ));
     }
