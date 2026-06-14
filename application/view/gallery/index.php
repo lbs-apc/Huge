@@ -16,7 +16,9 @@
                 <li>
                     <div class="thumbnail-item">
                         <div class="thumb-frame">
-                            <img src="<?php echo Config::get('URL'); ?>gallery/show/<?php echo $image->image_id; ?>">
+                            <a href="<?php echo Config::get('URL'); ?>gallery/show/<?php echo $image->image_id; ?>" target="_blank">
+                                <img src="<?php echo Config::get('URL'); ?>gallery/show/<?php echo $image->image_id; ?>">
+                            </a>
                         </div>
                         <div class="button-group">
                             <a href="<?php echo Config::get('URL'); ?>gallery/download/<?php echo $image->image_id; ?>" class="btn">Download</a>
@@ -63,9 +65,9 @@
 }
 
 .thumb-frame img {
-    min-height: 100%;
-    min-width: 100%;
-    object-fit: cover;
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain; /* This shows the whole image without cropping/zooming */
 }
 
 /* Zoom effect on hover */
