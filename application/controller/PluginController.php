@@ -10,22 +10,28 @@ class PluginController extends Controller
 
     public function index()
     {
-        $this->View->render('plugin/index');
+        $plugins = PluginModel::getAllPlugins();
+        $this->View->render('plugin/index', array('plugins' => $plugins));
     }
 
     public function upload()
     {
-        Redirect::to('gallery/index');
+        Redirect::to('plugin/index');
     }
 
     public function delete($id)
     {
-        Redirect::to('gallery/index');
+        Redirect::to('plugin/index');
     }
 
     public function toggle($id)
     {
-        Redirect::to('gallery/index');
+        if (!is_numeric($id)) {
+            Redirect::to('plugin/index');
+        }
+
+        PluginModel::togglePlugin($id);
+        Redirect::to('plugin/index');
     }
 
 }
