@@ -34,7 +34,7 @@
                     <td>Chat</td>
                 </tr>
                 </thead>
-                <?php foreach ($this->users as $user) { ?>
+            <?php foreach ($this->users as $user) { ?>
                     <tr class="<?= ($user->user_active == 0 ? 'inactive' : 'active'); ?>">
                         <td><?= $user->user_id; ?></td>
                         <td class="avatar">

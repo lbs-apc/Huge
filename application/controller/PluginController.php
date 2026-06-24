@@ -24,6 +24,16 @@ class PluginController extends Controller
         Redirect::to('plugin/index');
     }
 
+    public function install($id)
+    {
+        if (!is_numeric($id)) {
+            Redirect::to('plugin/index');
+        }
+
+        PluginModel::installPlugin($id);
+        Redirect::to('plugin/index');
+    }
+
     public function toggle($id)
     {
         if (!is_numeric($id)) {

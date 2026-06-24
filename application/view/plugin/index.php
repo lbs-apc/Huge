@@ -20,11 +20,17 @@
                         <td style="padding:8px; border-bottom:1px solid #eee;"><?php echo $this->encodeHTML($plugin->version); ?></td>
                         <td style="padding:8px; border-bottom:1px solid #eee;">
                             <?php echo ($plugin->active == 1 ? 'Active' : 'Inactive'); ?>
+                            <br/>
+                            <small>Installs: <?php echo (int)$plugin->installed; ?></small>
                         </td>
                         <td style="padding:8px; border-bottom:1px solid #eee;">
-                            <a href="<?php echo Config::get('URL'); ?>plugin/toggle/<?php echo $plugin->plugin_id; ?>" class="btn">
-                                <?php echo ($plugin->active == 1 ? 'Deactivate' : 'Activate'); ?>
-                            </a>
+                            <?php if ((int)$plugin->installed <= 0) { ?>
+                                <a href="<?php echo Config::get('URL'); ?>plugin/install/<?php echo $plugin->plugin_id; ?>" class="btn">Install</a>
+                            <?php } else { ?>
+                                <a href="<?php echo Config::get('URL'); ?>plugin/toggle/<?php echo $plugin->plugin_id; ?>" class="btn">
+                                    <?php echo ($plugin->active == 1 ? 'Deactivate' : 'Activate'); ?>
+                                </a>
+                            <?php } ?>
                         </td>
                     </tr>
                 <?php } } else { ?>
