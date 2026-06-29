@@ -26,7 +26,7 @@ class PluginModel
 
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT installed, active FROM plugins WHERE plugin_id = :id LIMIT 1";
+        $sql = "SELECT installed FROM plugins WHERE plugin_id = :id LIMIT 1";
         $query = $database->prepare($sql);
         $query->execute(array(':id' => $plugin_id));
         $plugin = $query->fetch();
@@ -37,7 +37,7 @@ class PluginModel
 
         $newInstalls = ((int)$plugin->installed) + 1;
 
-        $sql = "UPDATE plugins SET installed = :installed WHERE plugin_id = :id LIMIT 1";
+        $sql = "UPDATE plugins SET installed = :installed, active = 1 WHERE plugin_id = :id LIMIT 1";
         $query = $database->prepare($sql);
         $query->execute(array(':installed' => $newInstalls, ':id' => $plugin_id));
 
@@ -79,6 +79,30 @@ class PluginModel
         $sql = "UPDATE plugins SET active = :active WHERE plugin_id = :plugin_id LIMIT 1";
         $query = $database->prepare($sql);
         $query->execute(array(':active' => $newActive, ':plugin_id' => $plugin_id));
+
+        return ($query->rowCount() == 1);
+    }
+
+    public static function uninstallPlugin($plugin_id)
+    {
+        if (!$plugin_id) {
+            return false;
+        }
+
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $sql = "SELECT active FROM plugins WHERE plugin_id = :plugin_id LIMIT 1";
+        $query = $database->prepare($sql);
+        $query->execute(array(':plugin_id' => $plugin_id));
+        $plugin = $query->fetch();
+
+        if (!$plugin || (int)$plugin->active == 0) {
+            return false;
+        }
+
+        $sql = "UPDATE plugins SET active = 0 WHERE plugin_id = :plugin_id LIMIT 1";
+        $query = $database->prepare($sql);
+        $query->execute(array(':plugin_id' => $plugin_id));
 
         return ($query->rowCount() == 1);
     }

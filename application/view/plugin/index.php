@@ -30,6 +30,7 @@
                                 <a href="<?php echo Config::get('URL'); ?>plugin/toggle/<?php echo $plugin->plugin_id; ?>" class="btn">
                                     <?php echo ($plugin->active == 1 ? 'Deactivate' : 'Activate'); ?>
                                 </a>
+                                <a href="<?php echo Config::get('URL'); ?>plugin/uninstall/<?php echo $plugin->plugin_id; ?>" class="btn" style="background-color: #d32f2f; color: white;">Uninstall</a>
                             <?php } ?>
                         </td>
                     </tr>

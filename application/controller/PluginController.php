@@ -44,4 +44,14 @@ class PluginController extends Controller
         Redirect::to('plugin/index');
     }
 
+    public function uninstall($id)
+    {
+        if (!is_numeric($id)) {
+            Redirect::to('plugin/index');
+        }
+
+        PluginModel::uninstallPlugin($id);
+        Redirect::to('plugin/index');
+    }
+
 }
