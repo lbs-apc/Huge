@@ -1,6 +1,8 @@
 <div class="container">
     <h1>Plugin Store</h1>
 
+    <?php $this->renderFeedbackMessages(); ?>
+
     <div class="box">
         <h3>Plugins</h3>
 
@@ -25,12 +27,20 @@
                         </td>
                         <td style="padding:8px; border-bottom:1px solid #eee;">
                             <?php if ((int)$plugin->user_installed <= 0) { ?>
-                                <a href="<?php echo Config::get('URL'); ?>plugin/install/<?php echo $plugin->plugin_id; ?>" class="btn">Install</a>
+                                <form action="<?php echo Config::get('URL') . 'plugin/install/' . $plugin->plugin_id; ?>" method="POST" class="plugin-action-form">
+                                    <button type="submit" class="btn-plugin btn-install">Install</button>
+                                </form>
                             <?php } else { ?>
-                                <a href="<?php echo Config::get('URL'); ?>plugin/toggle/<?php echo $plugin->plugin_id; ?>" class="btn">
-                                    <?php echo ($plugin->user_active == 1 ? 'Deactivate' : 'Activate'); ?>
-                                </a>
-                                <a href="<?php echo Config::get('URL'); ?>plugin/uninstall/<?php echo $plugin->plugin_id; ?>" class="btn" style="background-color: #d32f2f; color: white;">Uninstall</a>
+                                <form action="<?php echo Config::get('URL') . 'plugin/toggle/' . $plugin->plugin_id; ?>" method="POST" class="plugin-action-form">
+                                    <?php if ($plugin->user_active == 1) { ?>
+                                        <button type="submit" class="btn-plugin btn-deactivate">Deactivate</button>
+                                    <?php } else { ?>
+                                        <button type="submit" class="btn-plugin btn-activate">Activate</button>
+                                    <?php } ?>
+                                </form>
+                                <form action="<?php echo Config::get('URL') . 'plugin/uninstall/' . $plugin->plugin_id; ?>" method="POST" class="plugin-action-form">
+                                    <button type="submit" class="btn-plugin btn-uninstall">Uninstall</button>
+                                </form>
                             <?php } ?>
                         </td>
                     </tr>

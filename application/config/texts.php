@@ -74,4 +74,10 @@ return array(
     "FEEDBACK_COOKIE_INVALID" => "Your remember-me-cookie is invalid.",
     "FEEDBACK_COOKIE_LOGIN_SUCCESSFUL" => "You were successfully logged in via the remember-me-cookie.",
     "FEEDBACK_ROLE_CHANGED_SUCCESSFUL" => "You changed the user Role Successfully!",
+    "FEEDBACK_PLUGIN_INSTALLED_SUCCESSFUL" => "Plugin installed successfully!",
+    "FEEDBACK_PLUGIN_INSTALLED_FAILED" => "Failed to install plugin.",
+    "FEEDBACK_PLUGIN_TOGGLED_SUCCESSFUL" => "Plugin toggled successfully!",
+    "FEEDBACK_PLUGIN_TOGGLED_FAILED" => "Failed to toggle plugin.",
+    "FEEDBACK_PLUGIN_UNINSTALLED_SUCCESSFUL" => "Plugin uninstalled successfully!",
+    "FEEDBACK_PLUGIN_UNINSTALLED_FAILED" => "Failed to uninstall plugin.",
 );

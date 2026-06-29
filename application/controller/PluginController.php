@@ -32,7 +32,11 @@ class PluginController extends Controller
         }
 
         $user_id = Session::get('user_id');
-        PluginModel::installPlugin($user_id, $id);
+        if (PluginModel::installPlugin($user_id, $id)) {
+            Session::add('feedback_positive', Text::get('FEEDBACK_PLUGIN_INSTALLED_SUCCESSFUL'));
+        } else {
+            Session::add('feedback_negative', Text::get('FEEDBACK_PLUGIN_INSTALLED_FAILED'));
+        }
         Redirect::to('plugin/index');
     }
 
@@ -43,7 +47,11 @@ class PluginController extends Controller
         }
 
         $user_id = Session::get('user_id');
-        PluginModel::togglePlugin($user_id, $id);
+        if (PluginModel::togglePlugin($user_id, $id)) {
+            Session::add('feedback_positive', Text::get('FEEDBACK_PLUGIN_TOGGLED_SUCCESSFUL'));
+        } else {
+            Session::add('feedback_negative', Text::get('FEEDBACK_PLUGIN_TOGGLED_FAILED'));
+        }
         Redirect::to('plugin/index');
     }
 
@@ -54,7 +62,11 @@ class PluginController extends Controller
         }
 
         $user_id = Session::get('user_id');
-        PluginModel::uninstallPlugin($user_id, $id);
+        if (PluginModel::uninstallPlugin($user_id, $id)) {
+            Session::add('feedback_positive', Text::get('FEEDBACK_PLUGIN_UNINSTALLED_SUCCESSFUL'));
+        } else {
+            Session::add('feedback_negative', Text::get('FEEDBACK_PLUGIN_UNINSTALLED_FAILED'));
+        }
         Redirect::to('plugin/index');
     }
 

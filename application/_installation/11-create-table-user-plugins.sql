@@ -12,4 +12,3 @@ CREATE TABLE IF NOT EXISTS `user_plugins` (
   CONSTRAINT `fk_plugin_id` FOREIGN KEY (`plugin_id`) REFERENCES `plugins` (`plugin_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
-s
