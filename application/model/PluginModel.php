@@ -2,107 +2,123 @@
 
 class PluginModel
 {
-    public static function getAllPlugins()
+    public static function getAllPlugins($user_id = null)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT * FROM plugins ORDER BY created_at DESC";
-        $query = $database->prepare($sql);
-        $query->execute();
+        if ($user_id) {
+            $sql = "SELECT p.*, 
+                           p.installed as total_installed,
+                           COALESCE(up.installed, 0) as user_installed, 
+                           COALESCE(up.active, 0) as user_active
+                    FROM plugins p
+                    LEFT JOIN user_plugins up ON p.plugin_id = up.plugin_id AND up.user_id = :user_id
+                    ORDER BY p.created_at DESC";
+            $query = $database->prepare($sql);
+            $query->execute(array(':user_id' => $user_id));
+        } else {
+            $sql = "SELECT * FROM plugins ORDER BY created_at DESC";
+            $query = $database->prepare($sql);
+            $query->execute();
+        }
 
         return $query->fetchAll();
     }
 
-    public static function displayPlugins()
+    public static function displayPlugins($user_id = null)
     {
-        return self::getAllPlugins();
+        return self::getAllPlugins($user_id);
     }
 
-    public static function installPlugin($plugin_id)
+    public static function installPlugin($user_id, $plugin_id)
     {
-        if (!$plugin_id) {
+        if (!$user_id || !$plugin_id) {
             return false;
         }
 
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT installed FROM plugins WHERE plugin_id = :id LIMIT 1";
+        $sql = "SELECT user_plugins_id, installed FROM user_plugins WHERE user_id = :user_id AND plugin_id = :plugin_id LIMIT 1";
         $query = $database->prepare($sql);
-        $query->execute(array(':id' => $plugin_id));
-        $plugin = $query->fetch();
+        $query->execute(array(':user_id' => $user_id, ':plugin_id' => $plugin_id));
+        $userPlugin = $query->fetch();
 
-        if (!$plugin) {
-            return false;
+        if ($userPlugin) {
+            $newInstalls = ((int)$userPlugin->installed) + 1;
+            $sql = "UPDATE user_plugins SET installed = :installed, active = 1 WHERE user_id = :user_id AND plugin_id = :plugin_id LIMIT 1";
+            $query = $database->prepare($sql);
+            $query->execute(array(':installed' => $newInstalls, ':user_id' => $user_id, ':plugin_id' => $plugin_id));
+        } else {
+            $sql = "INSERT INTO user_plugins (user_id, plugin_id, installed, active, installed_at) VALUES (:user_id, :plugin_id, 1, 1, NOW())";
+            $query = $database->prepare($sql);
+            $query->execute(array(':user_id' => $user_id, ':plugin_id' => $plugin_id));
         }
-
-        $newInstalls = ((int)$plugin->installed) + 1;
-
-        $sql = "UPDATE plugins SET installed = :installed, active = 1 WHERE plugin_id = :id LIMIT 1";
-        $query = $database->prepare($sql);
-        $query->execute(array(':installed' => $newInstalls, ':id' => $plugin_id));
 
         return ($query->rowCount() == 1);
     }
 
-    public static function activePlugins()
+    public static function activePlugins($user_id)
     {
+        if (!$user_id) {
+            return array();
+        }
+
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT * FROM plugins WHERE active = 1 ORDER BY created_at DESC";
+        $sql = "SELECT p.* FROM plugins p 
+                INNER JOIN user_plugins up ON p.plugin_id = up.plugin_id 
+                WHERE up.user_id = :user_id AND up.active = 1 
+                ORDER BY p.created_at DESC";
         $query = $database->prepare($sql);
-        $query->execute();
+        $query->execute(array(':user_id' => $user_id));
         return $query->fetchAll();
     }
 
-    public static function togglePlugin($plugin_id)
+    public static function togglePlugin($user_id, $plugin_id)
     {
-        if (!$plugin_id) {
+        if (!$user_id || !$plugin_id) {
             return false;
         }
 
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT active, installed FROM plugins WHERE plugin_id = :plugin_id LIMIT 1";
+        $sql = "SELECT active, installed FROM user_plugins WHERE user_id = :user_id AND plugin_id = :plugin_id LIMIT 1";
         $query = $database->prepare($sql);
-        $query->execute(array(':plugin_id' => $plugin_id));
-        $plugin = $query->fetch();
+        $query->execute(array(':user_id' => $user_id, ':plugin_id' => $plugin_id));
+        $userPlugin = $query->fetch();
 
-        if (!$plugin) {
+        if (!$userPlugin || (int)$userPlugin->installed <= 0) {
             return false;
         }
 
-        if ((int)$plugin->installed <= 0 && (int)$plugin->active == 0) {
-            return false;
-        }
+        $newActive = ((int)$userPlugin->active == 1) ? 0 : 1;
 
-        $newActive = ((int)$plugin->active == 1) ? 0 : 1;
-
-        $sql = "UPDATE plugins SET active = :active WHERE plugin_id = :plugin_id LIMIT 1";
+        $sql = "UPDATE user_plugins SET active = :active WHERE user_id = :user_id AND plugin_id = :plugin_id LIMIT 1";
         $query = $database->prepare($sql);
-        $query->execute(array(':active' => $newActive, ':plugin_id' => $plugin_id));
+        $query->execute(array(':active' => $newActive, ':user_id' => $user_id, ':plugin_id' => $plugin_id));
 
         return ($query->rowCount() == 1);
     }
 
-    public static function uninstallPlugin($plugin_id)
+    public static function uninstallPlugin($user_id, $plugin_id)
     {
-        if (!$plugin_id) {
+        if (!$user_id || !$plugin_id) {
             return false;
         }
 
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT active FROM plugins WHERE plugin_id = :plugin_id LIMIT 1";
+        $sql = "SELECT active FROM user_plugins WHERE user_id = :user_id AND plugin_id = :plugin_id LIMIT 1";
         $query = $database->prepare($sql);
-        $query->execute(array(':plugin_id' => $plugin_id));
-        $plugin = $query->fetch();
+        $query->execute(array(':user_id' => $user_id, ':plugin_id' => $plugin_id));
+        $userPlugin = $query->fetch();
 
-        if (!$plugin || (int)$plugin->active == 0) {
+        if (!$userPlugin || (int)$userPlugin->active == 0) {
             return false;
         }
 
-        $sql = "UPDATE plugins SET active = 0 WHERE plugin_id = :plugin_id LIMIT 1";
+        $sql = "UPDATE user_plugins SET active = 0 WHERE user_id = :user_id AND plugin_id = :plugin_id LIMIT 1";
         $query = $database->prepare($sql);
-        $query->execute(array(':plugin_id' => $plugin_id));
+        $query->execute(array(':active' => 0, ':user_id' => $user_id, ':plugin_id' => $plugin_id));
 
         return ($query->rowCount() == 1);
     }

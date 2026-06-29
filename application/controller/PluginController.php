@@ -10,7 +10,8 @@ class PluginController extends Controller
 
     public function index()
     {
-        $plugins = PluginModel::getAllPlugins();
+        $user_id = Session::get('user_id');
+        $plugins = PluginModel::getAllPlugins($user_id);
         $this->View->render('plugin/index', array('plugins' => $plugins));
     }
 
@@ -30,7 +31,8 @@ class PluginController extends Controller
             Redirect::to('plugin/index');
         }
 
-        PluginModel::installPlugin($id);
+        $user_id = Session::get('user_id');
+        PluginModel::installPlugin($user_id, $id);
         Redirect::to('plugin/index');
     }
 
@@ -40,7 +42,8 @@ class PluginController extends Controller
             Redirect::to('plugin/index');
         }
 
-        PluginModel::togglePlugin($id);
+        $user_id = Session::get('user_id');
+        PluginModel::togglePlugin($user_id, $id);
         Redirect::to('plugin/index');
     }
 
@@ -50,7 +53,8 @@ class PluginController extends Controller
             Redirect::to('plugin/index');
         }
 
-        PluginModel::uninstallPlugin($id);
+        $user_id = Session::get('user_id');
+        PluginModel::uninstallPlugin($user_id, $id);
         Redirect::to('plugin/index');
     }
 

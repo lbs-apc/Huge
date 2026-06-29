@@ -19,16 +19,16 @@
                         <td style="padding:8px; border-bottom:1px solid #eee;"><?php echo $this->encodeHTML($plugin->plugin_name); ?></td>
                         <td style="padding:8px; border-bottom:1px solid #eee;"><?php echo $this->encodeHTML($plugin->version); ?></td>
                         <td style="padding:8px; border-bottom:1px solid #eee;">
-                            <?php echo ($plugin->active == 1 ? 'Active' : 'Inactive'); ?>
+                            <?php echo ($plugin->user_active == 1 ? 'Active' : 'Inactive'); ?>
                             <br/>
-                            <small>Installs: <?php echo (int)$plugin->installed; ?></small>
+                            <small>Downloads: <?php echo (int)$plugin->total_installed; ?></small>
                         </td>
                         <td style="padding:8px; border-bottom:1px solid #eee;">
-                            <?php if ((int)$plugin->installed <= 0) { ?>
+                            <?php if ((int)$plugin->user_installed <= 0) { ?>
                                 <a href="<?php echo Config::get('URL'); ?>plugin/install/<?php echo $plugin->plugin_id; ?>" class="btn">Install</a>
                             <?php } else { ?>
                                 <a href="<?php echo Config::get('URL'); ?>plugin/toggle/<?php echo $plugin->plugin_id; ?>" class="btn">
-                                    <?php echo ($plugin->active == 1 ? 'Deactivate' : 'Activate'); ?>
+                                    <?php echo ($plugin->user_active == 1 ? 'Deactivate' : 'Activate'); ?>
                                 </a>
                                 <a href="<?php echo Config::get('URL'); ?>plugin/uninstall/<?php echo $plugin->plugin_id; ?>" class="btn" style="background-color: #d32f2f; color: white;">Uninstall</a>
                             <?php } ?>
