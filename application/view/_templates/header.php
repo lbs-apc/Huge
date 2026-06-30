@@ -1,3 +1,15 @@
+<?php
+$darkmode_active = false;
+if (Session::userIsLoggedIn()) {
+    $active_plugins = PluginModel::activePlugins(Session::get('user_id'));
+    foreach ($active_plugins as $plugin) {
+        if ($plugin->plugin_name === 'Darkmode') {
+            $darkmode_active = true;
+            break;
+        }
+    }
+}
+?>
 <!doctype html>
 <html>
 <head>
@@ -9,7 +21,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="<?php echo Config::get('URL'); ?>css/style.css?v=<?php echo time(); ?>" />
 </head>
-<body>
+<body class="<?php echo $darkmode_active ? 'dark-theme' : ''; ?>">
     <!-- wrapper, to center website -->
     <div class="wrapper">
 
