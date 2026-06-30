@@ -36,6 +36,59 @@ class GalleryModel
         $filename = time() . "_" . $name;
 
         if (move_uploaded_file($tmp, $target)) {
+            // Apply Watermarker plugin logic if active
+            $active_plugins = PluginModel::activePlugins($user_id);
+            $watermark_active = false;
+            foreach ($active_plugins as $plugin) {
+                if ($plugin->plugin_name === 'Watermarker') {
+                    $watermark_active = true;
+                    break;
+                }
+            }
+
+            if ($watermark_active) {
+                $info = getimagesize($target);
+                $mime = $info['mime'];
+                $image = null;
+
+                if ($mime == 'image/jpeg') {
+                    $image = imagecreatefromjpeg($target);
+                } elseif ($mime == 'image/png') {
+                    $image = imagecreatefrompng($target);
+                }
+
+                if ($image) {
+                    $user_name = Session::get('user_name') ? Session::get('user_name') : 'User';
+                    $watermark_text = "@" . $user_name;
+
+                    $font_size = 5;
+                    $font_width = imagefontwidth($font_size);
+                    $font_height = imagefontheight($font_size);
+                    $text_width = strlen($watermark_text) * $font_width;
+
+                    $x = imagesx($image) - $text_width - 15;
+                    $y = imagesy($image) - $font_height - 15;
+
+                    if ($x < 0) $x = 10;
+                    if ($y < 0) $y = 10;
+
+                    // Black semi-transparent background block for readability
+                    $bg_color = imagecolorallocatealpha($image, 0, 0, 0, 80);
+                    imagefilledrectangle($image, $x - 5, $y - 3, $x + $text_width + 5, $y + $font_height + 3, $bg_color);
+
+                    // White text
+                    $text_color = imagecolorallocate($image, 255, 255, 255);
+                    imagestring($image, $font_size, $x, $y, $watermark_text, $text_color);
+
+                    if ($mime == 'image/jpeg') {
+                        imagejpeg($image, $target, 90);
+                    } elseif ($mime == 'image/png') {
+                        imagepng($image, $target);
+                    }
+                    imagedestroy($image);
+                }
+            }
+
             $db = DatabaseFactory::getFactory()->getConnection();
             $sql = "INSERT INTO gallery (owner_id, filename, is_shared) VALUES (:owner, :file, 0)";
             $query = $db->prepare($sql);
