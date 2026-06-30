@@ -268,7 +268,7 @@ html { font-family: 'PT Sans', Georgia, serif; }
 .discussion {
 	max-width: 600px;
 	margin: 0 auto;
-	
+
 	display: flex;
 	flex-flow: column wrap;
 }
@@ -315,6 +315,9 @@ body.dark-theme a {
 body.dark-theme .wrapper {
     background-color: #121212;
     color: #e0e0e0;
+}
+body.dark-theme .logo {
+    background-image: url('../img/huge_dark.png') !important;
 }
 body.dark-theme .container,
 body.dark-theme .box {
