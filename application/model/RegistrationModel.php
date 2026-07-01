@@ -59,7 +59,7 @@ class RegistrationModel
         $user_activation_hash = bin2hex(random_bytes(40));
 
         // write user data to database
-        if (!self::writeNewUserToDatabase($user_name, $user_password_hash, $user_email = null, time(), $user_activation_hash)) {
+        if (!self::writeNewUserToDatabase($user_name, $user_password_hash, $user_email, time(), $user_activation_hash)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_CREATION_FAILED'));
             return false; // no reason not to return false here
         }
@@ -72,25 +72,11 @@ class RegistrationModel
             return false;
         }
 
-        if(self::verifyNewUser($user_id, $user_activation_hash)){
+        if (self::verifyNewUser($user_id, $user_activation_hash)) {
+            Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_SUCCESSFULLY_CREATED'));
             return true;
         }
 
-        // send verification email
-        if (self::sendVerificationEmail($user_id, $user_email, $user_activation_hash)) {
-            if(empty($user_email)) {
-                Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_SUCCESSFULLY_CREATED_WITHOUT_EMAIL'));
-                return true;
-            } else {
-                Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_SUCCESSFULLY_CREATED'));
-                return true;
-            }
-
-        }
-
-        // if verification email sending failed: instantly delete the user
-        self::rollbackRegistrationByUserId($user_id);
-        Session::add('feedback_negative', Text::get('FEEDBACK_VERIFICATION_MAIL_SENDING_FAILED'));
         return false;
     }
 
@@ -111,10 +97,10 @@ class RegistrationModel
         $return = true;
 
         // perform all necessary checks
-        // if (!CaptchaModel::checkCaptcha($captcha)) {
-        //     Session::add('feedback_negative', Text::get('FEEDBACK_CAPTCHA_WRONG'));
-        //     $return = false;
-        // }
+        if (!CaptchaModel::checkRecaptcha(Request::post('g-recaptcha-response'))) {
+            Session::add('feedback_negative', Text::get('FEEDBACK_CAPTCHA_WRONG'));
+            $return = false;
+        }
 
         // if username, email and password are all correctly validated, but make sure they all run on first sumbit
         if (self::validateUserName($user_name) AND self::validateUserEmail($user_email, $user_email_repeat) AND self::validateUserPassword($user_password_new, $user_password_repeat) AND $return) {
