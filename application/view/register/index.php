@@ -24,6 +24,9 @@
             <!--<a href="#" style="display: block; font-size: 11px; margin: 5px 0 15px 0; text-align: center"
                onclick="document.getElementById('captcha').src = '<?php echo Config::get('URL'); ?>register/showCaptcha?' + Math.random(); return false">Reload Captcha</a>-->
 
+            <div class="g-recaptcha" data-sitekey="<?php echo Config::get('RECAPTCHA_SITE_KEY'); ?>" style="margin-bottom: 15px;"></div>
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
             <input type="submit" value="Register" />
         </form>
     </div>
